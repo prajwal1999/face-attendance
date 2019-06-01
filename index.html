@@ -11,22 +11,23 @@
     <script defer src="./index.js"></script>
     <title>Document</title>
     <style>
-        canvas{
+        canvas{ 
+            border: none;
             position: absolute;
             top: 0;
             left: 0;
-            width: 540px;
-            height: 400px;
+            width: 1000px;
+            height: 750px;
         }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-8" style="border: 2px solid">
+            <div class="col-8" style="border:2px solid; position: relative;">
                 <div style="display: flex; justify-content: center; align-content: center;"> 
-                    <div style="position: relative; border:5px solid">
-                        <video id="inputVideo" onloadedmetadata="onPlay()"  autoplay muted></video>
+                    <div style="position: relative; border:none">
+                        <video id="inputVideo" onloadedmetadata="onPlay()" width="1000" height="750"  autoplay muted></video>
                         <canvas id="overlay" />
                     </div>
                 </div>
@@ -34,14 +35,20 @@
                     <img src="" alt="" id="faceIMG" width="500" height="350px">
                 </div>
             </div>
-            <div class="col-4">
-                <div style="padding: 10px 20px">
+            <div class="col-4" style="border: 2px solid; padding: 10px 20px">
+                <div>
                     <div class="alert d-none alert-danger alert-dismissible" id="not-detected-div">
                         <button type="button" class="close" data-dismiss="alert" id="not-detected-btn">&times;</button>
                         <strong id="err_msg"></strong>
                     </div>
                 </div>
-                <button class="btn btn-outline-primary" onclick="verify()">click</button>
+                <button class="btn btn-outline-primary" onclick="verify()">Mark Attendace</button>
+
+                <div class="d-none" style="border: 2px solid; display: flex; justify-content: center" id="ver-img-main-div">
+                    <div style="border: 2px solid; display: flex; justify-content: center; width: 100px" id="ver-img-div">
+                        <img src="./src/img/verified.png" alt="" style="width: 100%; height: 100%">
+                    </div>
+                </div>
                 
                 <div id="attendance-info" class="d-none">
                     <div class="" style="height:25px; border-radius: 5px; margin: 15px 0; background: #66d73e">
@@ -63,7 +70,7 @@
                     </div>
                 </div>
 
-                <div class="d-non" id="register-area" style="border:none; padding: 10px 30px 0 30px; margin-top: 15px">
+                <div class="d-none" id="register-area" style="border:none; padding: 10px 30px 0 30px; margin-top: 15px">
                     <form>
                         <div class="form-group row">
                             <label for="inputName" class="col-sm-2 col-form-label" onclick="sign_out()" style="font-size: 20px; font-family: 'Maven Pro', sans-serif;">Name</label>

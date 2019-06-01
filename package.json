@@ -1,6 +1,6 @@
 {
   "name": "attend-face",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "face detection app for attendance of employees",
   "main": "app.js",
   "scripts": {
@@ -19,5 +19,25 @@
   "devDependencies": {
     "electron": "^5.0.2",
     "electron-builder": "^20.41.0"
+  },
+  "build": {
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "lordemu97",
+        "repo": "dfdsffvfv"
+      }
+    ],
+    "appId": "com.augleAI.facex",
+    "productName": "FaceX",
+    "file": "attend-face-Setup.exe",
+    "target": "NSIS",
+    "directories": {
+      "output": "dist"
+    },
+    "nsis": {
+      "allowToChangeInstallationDirectory": true,
+      "oneClick": false
+    }
   }
 }
