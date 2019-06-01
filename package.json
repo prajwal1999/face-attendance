@@ -30,7 +30,6 @@
     ],
     "appId": "com.augleAI.facex",
     "productName": "FaceX",
-    "file": "attend-face-Setup.exe",
     "target": "NSIS",
     "directories": {
       "output": "dist"
