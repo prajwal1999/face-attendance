@@ -24,11 +24,14 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-8" style="border: 2px solid">
-                <div style="display: flex; justify-content: center; align-content: center"> 
+                <div style="display: flex; justify-content: center; align-content: center;"> 
                     <div style="position: relative; border:5px solid">
                         <video id="inputVideo" onloadedmetadata="onPlay()"  autoplay muted></video>
                         <canvas id="overlay" />
                     </div>
+                </div>
+                <div id="register-img-area">
+                    <img src="" alt="" id="faceIMG" width="500" height="350px">
                 </div>
             </div>
             <div class="col-4">
@@ -38,7 +41,60 @@
                         <strong id="err_msg"></strong>
                     </div>
                 </div>
-                <button class="btn btn-outline-primary" onclick="detectImage()">click</button>
+                <button class="btn btn-outline-primary" onclick="verify()">click</button>
+                
+                <div id="attendance-info" class="d-none">
+                    <div class="" style="height:25px; border-radius: 5px; margin: 15px 0; background: #66d73e">
+                    </div>
+                    
+                    <div class="container-fluid" style="font-size: 23px">
+                        <div class="row">
+                            <div class="col-sm-3" >Name:</div>
+                            <div class="col-sm-9" id="name"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">Email:</div>
+                            <div class="col-sm-9" id="email"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">Number:</div>
+                            <div class="col-sm-9" id="number"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-non" id="register-area" style="border:none; padding: 10px 30px 0 30px; margin-top: 15px">
+                    <form>
+                        <div class="form-group row">
+                            <label for="inputName" class="col-sm-2 col-form-label" onclick="sign_out()" style="font-size: 20px; font-family: 'Maven Pro', sans-serif;">Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="name" required class="form-control" id="inputName">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label for="inputEmail" class="col-sm-2 col-form-label" style="font-size: 20px; font-family: 'Maven Pro', sans-serif;">Email</label>
+                            <div class="col-sm-10">
+                            <input type="email" name="email" required class="form-control" id="inputEmail">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label for="inputNumber" class="col-sm-2 col-form-label" style="font-size: 20px; font-family: 'Maven Pro', sans-serif;">Number</label>
+                            <div class="col-sm-10">
+                                <input type="number" name="number" required class="form-control" id="inputNumber">
+                            </div>
+                        </div>
+                                
+                        <div class="container-fluid" style="padding: 30px 0px">
+                            <div class="row">                    
+                                <button type="submit" id='ok-btn' class="btn btn-outline-primary  col-sm-5" style="font-size: 40px; font-family: 'Maven Pro', sans-serif;" onclick="register()">OK</button>
+                                <div class="col-sm-2"></div>
+                                <button type="button" class="btn btn-outline-dark col-sm-5" style="font-size: 40px; font-family: 'Maven Pro', sans-serif;" onclick="cancel()">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

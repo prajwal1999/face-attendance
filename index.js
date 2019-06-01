@@ -1,4 +1,6 @@
 const videoEl = $('#inputVideo').get(0)
+const s3 = require('./src/js/s3helper')
+const axios = require('axios')
 
 faceapi.env.monkeyPatch({
     Canvas: HTMLCanvasElement,
@@ -22,12 +24,12 @@ const startVideo = async()=>{
           videoEl.srcObject = stream
         },
         err => {
-        //   document.getElementById('err_msg').innerText = "Error in playing video"
-        //   $('#error-div').removeClass('d-none')
-        //   setTimeout(()=>{
-        //     $('#not-detected-div').addClass('d-none')
-        //     document.getElementById('err_msg').innerText = ""
-        //   }, 2000)
+          document.getElementById('err_msg').innerText = "Error in playing video"
+          $('#error-div').removeClass('d-none')
+          setTimeout(()=>{
+            $('#not-detected-div').addClass('d-none')
+            document.getElementById('err_msg').innerText = ""
+          }, 2000)
         }
     )
   }
@@ -52,6 +54,25 @@ const startVideo = async()=>{
         faceapi.draw.drawDetections(canvas, null)
     } 
     setTimeout(() => onPlay())
+  }
+
+  const setImageName = async ()=>{
+    try {
+    //   const storeId = await localStorage.getItem("storeId")
+      const storeId = "THN003"
+      let d = new Date()
+      let year = d.getUTCFullYear().toString()
+      let month = d.getUTCMonth() + 1
+        if(month < 10){month = '0'+month.toString()}
+        else{month = month.toString()}
+      let date = d.getUTCDate().toString()
+      let hours = d.getUTCHours()
+      let minute = d.getUTCMinutes()
+      let second = d.getUTCSeconds()
+      return storeId.toString() + date + month + year + hours + minute + second
+    } catch (error) {
+      return false
+    }
   }
 
   const checkSingleFrame = async ()=>{
@@ -83,16 +104,15 @@ const startVideo = async()=>{
     })
   }
 
-  const detectImage = async ()=>{ console.log('called')
+  const detectImage = async ()=>{
     const number_of_iterations = 10
     let i = 0
     while(i<number_of_iterations){
       try {
         const get_frame = await checkSingleFrame()
-        console.log(get_frame.imgData)
         return get_frame
       } catch (error) {
-        console.log(error)
+        // console.log(error)
         i++
       } 
     }
@@ -106,3 +126,140 @@ const startVideo = async()=>{
       return false
     }
   }
+
+
+const verify = async ()=>{
+
+  const save_temp_data = async ()=>{
+    const detectedImage = await detectImage()
+    if(detectedImage){
+      const fileName = await setImageName()
+      localStorage.setItem('imageName', fileName)
+      localStorage.setItem('imageData', detectedImage.imgData)
+      $('#spinner').removeClass('d-none')
+      return true
+    }
+    return false
+  }
+
+  const ec2_call = (p)=>{
+    return new Promise((resolve, reject)=>{
+      axios.post('http://ec2-13-234-136-115.ap-south-1.compute.amazonaws.com:3000/v0.01a/identify', p)
+      .then((response)=>{
+        resolve(response)
+      }) .catch((err)=>{
+        reject(err)
+      })
+      setTimeout(()=>{
+        resolve(false)
+      },3000)
+    })
+  }
+
+  const saveTempData = await save_temp_data()
+  if(saveTempData) {
+
+    buf = new Buffer(localStorage.getItem("imageData").replace(/^data:image\/\w+;base64,/, ""),'base64')
+    var params = {
+      "Bucket":"photorecog",
+      "Key": localStorage.getItem("imageName") + ".jpeg",
+      "ContentType":'image/jpeg',
+      "Body": buf,
+      "ContentEncoding": 'base64',
+      "ACL":"private"
+    };
+  
+    var params2 = {
+      "bucket":"photorecog",
+      "photo": localStorage.getItem("imageName") + ".jpeg",
+      "collectionId": "testCollection"
+    };
+
+    s3.uploadS3(params, (data, err)=>{
+      if(err){
+        document.getElementById('err_msg').innerText = "Error in Image Upload to Server"
+        $('#not-detected-div').removeClass('d-none')
+        setTimeout(()=>{
+          $('#not-detected-div').addClass('d-none')
+          document.getElementById('err_msg').innerText = ""
+        }, 2000)
+        console.log('error in upload s3', err)
+      } else {
+        ec2_call(params2)
+          .then((res)=>{
+            if(res === false){
+              document.getElementById('err_msg').innerText = "Failed to connect server"
+              $('#not-detected-div').removeClass('d-none')
+              setTimeout(()=>{
+                $('#not-detected-div').addClass('d-none')
+                document.getElementById('err_msg').innerText = ""
+                $('#spinner').addClass('d-none')
+              }, 2000)
+            }
+            else if(response.data.found){
+              document.getElementById('name').innerHTML = response.data.name
+              document.getElementById('email').innerHTML = response.data.email
+              document.getElementById('number').innerHTML = response.data.number
+            } else{
+              // detected face not registered
+            }
+          })
+      }
+    })
+
+  } else {
+
+  }
+}
+
+
+
+document.getElementById('ok-btn').addEventListener("click", (event)=>{
+  event.preventDefault()
+  buf = new Buffer(localStorage.getItem("imageData").replace(/^data:image\/\w+;base64,/, ""),'base64')
+  let regParams = {
+      "Bucket":"photorecog",
+      "Key": localStorage.getItem("imageName") + ".jpeg",
+      "ContentType":'image/jpeg',
+      "Body": buf,
+      "ContentEncoding": 'base64',
+      "ACL":"private",
+      "Metadata": {
+        "name": $('#inputName').val(),
+        "number": $('#inputNumber').val(),
+        "email": $('#inputEmail').val(),
+        "storeId": localStorage.getItem("storeId")
+      }
+  }
+
+  let regParams2 = {
+    "bucket":"photorecog",
+    "photo": localStorage.getItem("imageName") + ".jpeg",
+    "collectionId": "testCollection"
+  }
+
+  const ec2_call = (p)=>{
+    return new Promise((resolve, reject)=>{
+      axios.post('http://ec2-13-234-136-115.ap-south-1.compute.amazonaws.com:3000/v0.01a/registerUser', p)
+      .then((response)=>{
+        resolve(response)
+      }) .catch((err)=>{
+        reject(err)
+      })
+      setTimeout(()=>{
+        resolve(false)
+      },3000)
+    })
+  }
+
+  let name = $('#inputName').val()
+  let email = $('#inputEmail').val()
+  let number = $('#inputNumber').val()
+  if(name == "" || email == "" || number == ""){
+    console.log("please fill all the details")
+  } else {
+    
+  }
+
+
+})

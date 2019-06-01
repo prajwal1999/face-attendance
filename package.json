@@ -4,7 +4,8 @@
   "description": "face detection app for attendance of employees",
   "main": "app.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "publish": "build -p always"
   },
   "author": "prajwal kamble",
   "license": "ISC",
