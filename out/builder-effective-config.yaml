@@ -1,0 +1,14 @@
+directories:
+  output: dist
+  buildResources: build
+publish:
+  - provider: github
+    owner: prajwal1999
+    repo: face-attendance
+appId: com.augleAI.facex
+productName: FaceX
+target: NSIS
+nsis:
+  allowToChangeInstallationDirectory: true
+  oneClick: false
+electronVersion: 5.0.2

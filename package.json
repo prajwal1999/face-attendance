@@ -1,6 +1,6 @@
 {
-  "name": "attend-face",
-  "version": "0.0.3",
+  "name": "FaceSure",
+  "version": "0.0.4",
   "description": "face detection app for attendance of employees",
   "main": "app.js",
   "scripts": {
@@ -24,15 +24,15 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "lordemu97",
-        "repo": "dfdsffvfv"
+        "owner": "prajwal1999",
+        "repo": "face-attendance"
       }
     ],
     "appId": "com.augleAI.facex",
     "productName": "FaceX",
     "target": "NSIS",
     "directories": {
-      "output": "dist"
+      "output": "out"
     },
     "nsis": {
       "allowToChangeInstallationDirectory": true,

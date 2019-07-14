@@ -1,7 +1,8 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu, MenuItem, globalShortcut } = require('electron')
 const path = require('path')
 const faceapi =  require('./src/ML-API/dist/face-api.js')
 let mainWindow = null
+
 // console.log(faceapi.nets.tinyFaceDetector.load)
 const debug = /--debug/.test(process.argv[2])
 
@@ -50,7 +51,9 @@ function initialize () {
         width: 1580,
         minWidth: 680,
         height: 1000,
-        title: app.getName(),
+        title: "FaceSure",
+        icon: "./img/Augle-Icon.png",
+        fullscreen: true,
         webPreferences: {
           nodeIntegration: true
         }
@@ -78,6 +81,10 @@ function initialize () {
   
     app.on('ready', () => {
       createWindow()
+      const template = []
+    
+      const menu = Menu.buildFromTemplate(template);
+      Menu.setApplicationMenu(menu);
     })
   
     app.on('window-all-closed', () => {

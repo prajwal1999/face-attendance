@@ -3,7 +3,7 @@ AWS.config.update({region:'ap-south-1'});
 var s3 = new AWS.S3()
 /* Deprecated Functions */
 function uploadS3(obj, callback) {
-    console.log("Uploading...");
+    // console.log("Uploading...");
     
     s3.upload(obj, function (err, data){
       if(err) {
